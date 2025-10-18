@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: cnab_postgres
+    environment:
+      POSTGRES_DB: cnab_processor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cnab_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cnab_app
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=cnab_processor;Username=postgres;Password=postgres
+      - Environment=Development
+      - DetailedErrors=true
+      - EnableSwagger=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cnab_network
+
+volumes:
+  postgres_data:
+
+networks:
+  cnab_network:
+    driver: bridge
