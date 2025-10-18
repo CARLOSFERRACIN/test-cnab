@@ -76,6 +76,21 @@ class CnabHomePage {
         }
     }
 
+    resetUploadForm() {
+        // Clear the file input
+        if (this.fileInput) {
+            this.fileInput.value = '';
+        }
+        
+        // Reset the file display to default state
+        this.resetFileDisplay();
+        
+        // Reset the form
+        if (this.uploadForm) {
+            this.uploadForm.reset();
+        }
+    }
+
     formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -114,6 +129,7 @@ class CnabHomePage {
             if (result.success) {
                 CnabUtils.showAlert(result.message, 'success');
                 this.loadStores(); // Refresh stores after upload
+                this.resetUploadForm(); // Reset upload form after successful upload
             } else {
                 CnabUtils.showAlert(result.message, 'error');
             }
@@ -285,31 +301,38 @@ class CnabHomePage {
     }
 
     formatDate(dateString) {
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        
-        return `${day}/${month}/${year} ${hours}:${minutes}`;
+        try {
+            // Parse the UTC date string from the database
+            const utcDate = new Date(dateString);
+            
+            // Check if the date is valid
+            if (isNaN(utcDate.getTime())) {
+                return 'Invalid Date';
+            }
+            
+            const day = utcDate.getDate().toString().padStart(2, '0');
+            const month = (utcDate.getMonth() + 1).toString().padStart(2, '0');
+            const year = utcDate.getFullYear();
+            const hours = utcDate.getHours().toString().padStart(2, '0');
+            const minutes = utcDate.getMinutes().toString().padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Invalid Date';
+        }
     }
 
     isDebitTransaction(type) {
-        // Baseado no padrão CNAB (mesma lógica do TransactionTypeHelper.cs):
-        // Tipos de débito: 2 (Boleto), 3 (Financiamento), 9 (Desconto)
-        // Tipos de crédito: 1 (Débito), 4 (Crédito), 5 (Recebimento Empréstimo), 6 (Vendas), 7 (Recebimento TED), 8 (Recebimento DOC)
         const debitTypes = [2, 3, 9];
         return debitTypes.includes(parseInt(type));
     }
 
     getEffectiveAmount(type, amount) {
-        // Mesma lógica do TransactionTypeHelper.GetEffectiveAmount
         return this.isDebitTransaction(type) ? -Math.abs(amount) : Math.abs(amount);
     }
 
     getTransactionTypeDescription(type) {
-        // Mesma lógica do TransactionTypeHelper.GetTransactionTypeDescription
         const descriptions = {
             1: 'Debit',
             2: 'Boleto',
@@ -325,12 +348,10 @@ class CnabHomePage {
     }
 
     getNature(type) {
-        // Mesma lógica do TransactionTypeHelper.GetNature
         return this.isDebitTransaction(type) ? 'Out' : 'In';
     }
 
     getSign(type) {
-        // Mesma lógica do TransactionTypeHelper.GetSign
         return this.isDebitTransaction(type) ? '-' : '+';
     }
 
@@ -370,12 +391,10 @@ class CnabHomePage {
     }
 }
 
-// Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new CnabHomePage();
 });
 
-// Global function for backward compatibility
 function loadStores() {
     const homePage = new CnabHomePage();
     homePage.loadStores();

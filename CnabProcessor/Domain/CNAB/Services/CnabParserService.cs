@@ -9,7 +9,7 @@ public class CnabParserService : ICnabParserService
     {
         var transactions = new List<Transaction>();
 
-        using var reader = new StreamReader(fileStream);
+        using var reader = new StreamReader(fileStream, System.Text.Encoding.UTF8);
         string? line;
 
         while ((line = await reader.ReadLineAsync()) != null)
@@ -46,23 +46,27 @@ public class CnabParserService : ICnabParserService
             var year = int.Parse(dateStr.Substring(0, 4));
             var month = int.Parse(dateStr.Substring(4, 2));
             var day = int.Parse(dateStr.Substring(6, 2));
-            var date = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);
-
-            var amount = decimal.Parse(amountStr) / 100m;
 
             var hour = int.Parse(timeStr.Substring(0, 2));
             var minute = int.Parse(timeStr.Substring(2, 2));
             var second = int.Parse(timeStr.Substring(4, 2));
-            var time = new TimeSpan(hour, minute, second);
+            
+            // Create DateTime in UTC-3 timezone (Brazil timezone)
+            var utcMinus3 = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            var localDateTime = new DateTime(year, month, day, hour, minute, second, DateTimeKind.Unspecified);
+            
+            // Convert from UTC-3 to UTC for database storage
+            var utcDateTime = TimeZoneInfo.ConvertTimeToUtc(localDateTime, utcMinus3);
+
+            var amount = decimal.Parse(amountStr) / 100m;
 
             return new Transaction
             {
                 Type = type,
-                Date = date,
+                Date = utcDateTime,
                 Amount = amount,
                 Cpf = cpf,
                 Card = card,
-                Time = time,
                 StoreOwner = storeOwner,
                 StoreName = storeName
             };
@@ -72,4 +76,5 @@ public class CnabParserService : ICnabParserService
             return null;
         }
     }
+
 }

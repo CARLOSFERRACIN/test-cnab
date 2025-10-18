@@ -76,7 +76,6 @@ public class StoresControllerTests
                 Amount = 100.50m,
                 Cpf = "12345678901",
                 Card = "123456789012",
-                Time = TimeSpan.FromHours(10),
                 StoreOwner = "JOÃO MACEDO",
                 StoreName = "BAR DO JOÃO",
                 StoreId = storeId

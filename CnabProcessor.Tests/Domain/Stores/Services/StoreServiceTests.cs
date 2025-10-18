@@ -105,11 +105,10 @@ public class StoreServiceTests
             {
                 Id = 1,
                 Type = 1,
-                Date = new DateTime(2023, 1, 15, 10, 30, 0),
+                Date = new DateTime(2023, 1, 15, 10, 30, 0, DateTimeKind.Utc),
                 Amount = 100.50m,
                 Cpf = "12345678901",
                 Card = "123456789012",
-                Time = new TimeSpan(10, 30, 0),
                 StoreOwner = "JOÃO MACEDO",
                 StoreName = "BAR DO JOÃO",
                 StoreId = storeId
@@ -118,11 +117,10 @@ public class StoreServiceTests
             {
                 Id = 2,
                 Type = 2,
-                Date = new DateTime(2023, 1, 15, 14, 20, 0),
+                Date = new DateTime(2023, 1, 15, 14, 20, 0, DateTimeKind.Utc),
                 Amount = 50.00m,
                 Cpf = "98765432109",
                 Card = "987654321098",
-                Time = new TimeSpan(14, 20, 0),
                 StoreOwner = "JOÃO MACEDO",
                 StoreName = "BAR DO JOÃO",
                 StoreId = storeId

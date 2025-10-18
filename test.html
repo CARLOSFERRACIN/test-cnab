@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page - CNAB Processor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CNAB Processor</h1>
+            <p>CNAB file processing system</p>
+        </header>
+        
+        <main>
+            
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-upload card-icon"></i>
+        <h2 class="card-title">CNAB File Upload</h2>
+    </div>
+    
+    <div class="card-body">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file" class="form-label">CNAB File (.txt)</label>
+                <div class="file-upload">
+                    <input type="file" id="file" name="file" accept=".txt" required class="form-control" />
+                    <label for="file" class="file-upload-label">
+                        <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                        <div>
+                            <strong>Click to select file</strong>
+                            <br>
+                            <small>Accepted formats: .txt</small>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-play"></i>
+                Process File
+            </button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Processing CNAB file...</div>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-chart-line card-icon"></i>
+        <h2 class="card-title">Processed Stores</h2>
+    </div>
+    
+    <div class="card-body">
+        <div id="stats-container" class="stats-grid" style="display: none;">
+            <!-- Statistics will be inserted here -->
+        </div>
+        
+        <button id="loadStoresBtn" class="btn btn-secondary">
+            <i class="fas fa-sync-alt"></i>
+            Load Stores
+        </button>
+        
+        <div id="storesContainer" class="stores-list">
+            <div class="empty-state">
+                <i class="fas fa-inbox empty-state-icon"></i>
+                <h3>No stores processed</h3>
+                <p>Upload a CNAB file and click "Load Stores"</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        </main>
+    </div>
+    
+    <script src="/js/site.js" asp-append-version="true"></script>
+    
+    <script src="/js/pages/home.js" asp-append-version="true"></script>
+
+</body>
+</html>

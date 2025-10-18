@@ -28,9 +28,6 @@ public class Transaction
     public string Card { get; set; } = string.Empty;
 
     [Required]
-    public TimeSpan Time { get; set; }
-
-    [Required]
     [StringLength(14)]
     public string StoreOwner { get; set; } = string.Empty;
 

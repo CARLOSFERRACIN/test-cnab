@@ -63,17 +63,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllers();
-
+// Apply migrations before starting the application
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<CnabContext>();
     try
     {
+        Console.WriteLine("Applying database migrations...");
         context.Database.Migrate();
         Console.WriteLine("Migrations applied successfully");
     }
@@ -82,14 +78,22 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Error applying migrations: {ex.Message}");
         try
         {
+            Console.WriteLine("Attempting to create database...");
             context.Database.EnsureCreated();
             Console.WriteLine("Database created successfully");
         }
         catch (Exception ex2)
         {
             Console.WriteLine($"Error creating database: {ex2.Message}");
+            throw; // Re-throw to prevent application from starting with broken database
         }
     }
 }
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllers();
 
 app.Run();

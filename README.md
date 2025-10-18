@@ -12,6 +12,7 @@ CNAB file processing system developed in .NET 9 with PostgreSQL.
 - ✅ Modern and responsive web interface
 - ✅ Complete REST API
 - ✅ Automatic store balance calculation
+- ✅ **UTC to Local Timezone Conversion** - Dates automatically converted to user's timezone
 - ✅ Docker Compose for development
 - ✅ Automated tests
 - ✅ API documentation
@@ -51,6 +52,18 @@ The project follows **Clean Architecture** principles with:
 2. **Unit of Work** manages transactions atomically
 3. **Repositories** handle all database operations
 4. **Services** contain business logic
+
+### Timezone Handling:
+- **Database Storage**: All dates stored in UTC format
+- **Backend Processing**: CNAB parser combines date and time into UTC DateTime
+- **Frontend Display**: JavaScript automatically converts UTC to user's local timezone
+- **Format**: Dates displayed as `dd/MM/yyyy HH:mm` in local timezone
+
+### Database Management:
+- **Automatic Migrations**: Database migrations run automatically on application startup
+- **UTC-3 to UTC Conversion**: CNAB file times converted from Brazil timezone to UTC
+- **Single DateTime Column**: Combined date and time storage for efficiency
+- **Migration Safety**: Automatic fallback to database creation if migrations fail
 
 ## 📁 Project Structure
 

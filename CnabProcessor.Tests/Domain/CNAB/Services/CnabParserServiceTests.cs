@@ -29,11 +29,12 @@ public class CnabParserServiceTests
         // Check first transaction (from real file)
         var firstTransaction = result[0];
         Assert.Equal(3, firstTransaction.Type);
-        Assert.Equal(new DateTime(2019, 3, 1, 0, 0, 0, DateTimeKind.Utc), firstTransaction.Date);
+        // Date now includes time component and is converted from UTC-3 to UTC
+        // Original: 2019-03-01 15:34:53 UTC-3 -> 2019-03-01 18:34:53 UTC
+        Assert.Equal(new DateTime(2019, 3, 1, 18, 34, 53, DateTimeKind.Utc), firstTransaction.Date);
         Assert.Equal(142.00m, firstTransaction.Amount);
         Assert.Equal("09620676017", firstTransaction.Cpf);
         Assert.Equal("4753****3153", firstTransaction.Card);
-        Assert.Equal(new TimeSpan(15, 34, 53), firstTransaction.Time);
         Assert.Equal("JOÃO MACEDO", firstTransaction.StoreOwner.Trim());
         Assert.Equal("BAR DO JOÃO", firstTransaction.StoreName.Trim());
     }
