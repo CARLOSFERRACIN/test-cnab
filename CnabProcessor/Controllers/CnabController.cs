@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CnabProcessor.Domain.CNAB.Services.Interfaces;
+using CnabProcessor.Models.Response;
 
 namespace CnabProcessor.Controllers;
 
@@ -16,7 +17,18 @@ public class CnabController : ControllerBase
         _logger = logger;
     }
     
+    /// <summary>
+    /// Upload CNAB file
+    /// </summary>
+    /// <param name="file">CNAB file to upload (.txt format)</param>
+    /// <returns>Processing result with store and transaction counts</returns>
+    /// <response code="200">File processed successfully</response>
+    /// <response code="400">Invalid file or processing error</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost("upload")]
+    [ProducesResponseType(typeof(ProcessCNABResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProcessCNABResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UploadCnabFile(IFormFile file)
     {
         if (file == null || file.Length == 0)

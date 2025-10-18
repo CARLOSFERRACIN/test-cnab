@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CnabProcessor.Domain.CNAB.Services.Interfaces;
+using CnabProcessor.Models.Response;
 
 namespace CnabProcessor.Controllers;
 
@@ -16,7 +17,15 @@ public class StoresController : ControllerBase
         _logger = logger;
     }
     
+    /// <summary>
+    /// Get all stores
+    /// </summary>
+    /// <returns>List of stores with summary information including balance and transaction count</returns>
+    /// <response code="200">Stores retrieved successfully</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
+    [ProducesResponseType(typeof(List<StoreSummaryResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetStores()
     {
         try
@@ -31,7 +40,16 @@ public class StoresController : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Get store transactions
+    /// </summary>
+    /// <param name="storeId">Store ID to get transactions for</param>
+    /// <returns>List of transactions for the specified store</returns>
+    /// <response code="200">Transactions retrieved successfully</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet("{storeId}/transactions")]
+    [ProducesResponseType(typeof(List<TransactionResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetStoreTransactions(int storeId)
     {
         try

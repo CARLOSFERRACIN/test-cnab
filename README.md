@@ -16,6 +16,16 @@ CNAB file processing system developed in .NET 9 with PostgreSQL.
 - ✅ Automated tests
 - ✅ API documentation
 
+## 📸 Screenshots
+
+### 🖥️ **Application Interface**
+![Application Interface](SITE_IMG.png)
+*Modern web interface for CNAB file processing with real-time data visualization*
+
+### 📚 **API Documentation (Swagger)**
+![Swagger Documentation](SWAGGER.png)
+*Complete API documentation with interactive endpoints and data schemas*
+
 ## 🚀 Technologies Used
 
 - **.NET 9** - Main framework
