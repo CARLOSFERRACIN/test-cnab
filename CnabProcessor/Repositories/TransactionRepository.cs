@@ -1,9 +1,9 @@
 using CnabProcessor.Models.Entity;
 using CnabProcessor.Repositories.Data;
 using CnabProcessor.Repositories.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CnabProcessor.Repositories;
 
@@ -13,12 +13,12 @@ public class TransactionRepository : Repository<Transaction>, ITransactionReposi
     public TransactionRepository(CnabContext context) : base(context)
     {
     }
-    
+
     public async Task BulkInsertAsync(IEnumerable<Transaction> transactions)
     {
         await _context.BulkInsertAsync(transactions);
     }
-    
+
     public async Task<List<Transaction>> GetByStoreIdAsync(int storeId)
     {
         return await _context.Transactions

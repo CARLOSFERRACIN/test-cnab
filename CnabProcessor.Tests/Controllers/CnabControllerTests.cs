@@ -36,7 +36,7 @@ public class CnabControllerTests
         var mockProcessorService = new Mock<ICnabProcessorService>();
         var mockLogger = new Mock<ILogger<CnabController>>();
         var controller = new CnabController(mockProcessorService.Object, mockLogger.Object);
-        
+
         var mockFile = new Mock<IFormFile>();
         mockFile.Setup(f => f.FileName).Returns("test.pdf");
         mockFile.Setup(f => f.Length).Returns(100);
@@ -57,13 +57,13 @@ public class CnabControllerTests
         var mockProcessorService = new Mock<ICnabProcessorService>();
         var mockLogger = new Mock<ILogger<CnabController>>();
         var controller = new CnabController(mockProcessorService.Object, mockLogger.Object);
-        
+
         var mockFile = new Mock<IFormFile>();
         var mockStream = new MemoryStream();
         mockFile.Setup(f => f.FileName).Returns("test.txt");
         mockFile.Setup(f => f.Length).Returns(100);
         mockFile.Setup(f => f.OpenReadStream()).Returns(mockStream);
-        
+
         var expectedResult = new ProcessCNABResponse { Success = true, Message = "Success" };
         mockProcessorService.Setup(p => p.ProcessCnabFileAsync(It.IsAny<Stream>()))
                            .ReturnsAsync(expectedResult);

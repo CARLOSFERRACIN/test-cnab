@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using CnabProcessor.Domain.CNAB.Services.Interfaces;
+using CnabProcessor.Domain.Stores.Services.Interfaces;
 using CnabProcessor.Models.Response;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CnabProcessor.Controllers;
 
@@ -8,15 +8,15 @@ namespace CnabProcessor.Controllers;
 [Route("api/[controller]")]
 public class StoresController : ControllerBase
 {
-    private readonly ICnabProcessorService _processorService;
+    private readonly IStoreService _storeService;
     private readonly ILogger<StoresController> _logger;
-    
-    public StoresController(ICnabProcessorService processorService, ILogger<StoresController> logger)
+
+    public StoresController(IStoreService storeService, ILogger<StoresController> logger)
     {
-        _processorService = processorService;
+        _storeService = storeService;
         _logger = logger;
     }
-    
+
     /// <summary>
     /// Get all stores
     /// </summary>
@@ -30,7 +30,7 @@ public class StoresController : ControllerBase
     {
         try
         {
-            var stores = await _processorService.GetStoreSummariesAsync();
+            var stores = await _storeService.GetStoreSummariesAsync();
             return Ok(stores);
         }
         catch (Exception ex)
@@ -39,7 +39,7 @@ public class StoresController : ControllerBase
             return StatusCode(500, "Internal server error while retrieving stores.");
         }
     }
-    
+
     /// <summary>
     /// Get store transactions
     /// </summary>
@@ -54,7 +54,7 @@ public class StoresController : ControllerBase
     {
         try
         {
-            var transactions = await _processorService.GetStoreTransactionsAsync(storeId);
+            var transactions = await _storeService.GetStoreTransactionsAsync(storeId);
             return Ok(transactions);
         }
         catch (Exception ex)

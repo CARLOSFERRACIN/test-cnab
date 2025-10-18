@@ -1,5 +1,7 @@
 using CnabProcessor.Domain.CNAB.Services;
 using CnabProcessor.Domain.CNAB.Services.Interfaces;
+using CnabProcessor.Domain.Stores.Services;
+using CnabProcessor.Domain.Stores.Services.Interfaces;
 using CnabProcessor.Repositories;
 using CnabProcessor.Repositories.Data;
 using CnabProcessor.Repositories.Interfaces;
@@ -17,7 +19,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for processing CNAB files and managing financial transactions"
     });
-    
+
     // Include XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -38,6 +40,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Services
 builder.Services.AddScoped<ICnabParserService, CnabParserService>();
 builder.Services.AddScoped<ICnabProcessorService, CnabProcessorService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
 
 var app = builder.Build();
 

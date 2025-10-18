@@ -1,5 +1,3 @@
-using CnabProcessor.Models.Entity;
-
 namespace CnabProcessor.Repositories.Interfaces;
 
 public interface IUnitOfWork : IDisposable

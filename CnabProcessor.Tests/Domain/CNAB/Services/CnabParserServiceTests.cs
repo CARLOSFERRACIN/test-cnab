@@ -25,7 +25,7 @@ public class CnabParserServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.True(result.Count > 0);
-        
+
         // Check first transaction (from real file)
         var firstTransaction = result[0];
         Assert.Equal(3, firstTransaction.Type);
@@ -58,7 +58,7 @@ public class CnabParserServiceTests
         // Arrange - Using two valid CNAB lines from the real file
         var cnabContent = "invalid line\n" +
                          "5201903010000013200556418150633123****7687145607MARIA JOSEFINALOJA DO Ó - MATRIZ\n";
-        
+
         using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(cnabContent));
 
         // Act
@@ -89,7 +89,7 @@ public class CnabParserServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(21, result.Count); // Real file has 21 transactions
-        
+
         // Verify all transactions have valid data
         foreach (var transaction in result)
         {

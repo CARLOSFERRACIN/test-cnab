@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using CnabProcessor.Domain.CNAB.Services.Interfaces;
 using CnabProcessor.Models.Response;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CnabProcessor.Controllers;
 
@@ -10,13 +10,13 @@ public class CnabController : ControllerBase
 {
     private readonly ICnabProcessorService _processorService;
     private readonly ILogger<CnabController> _logger;
-    
+
     public CnabController(ICnabProcessorService processorService, ILogger<CnabController> logger)
     {
         _processorService = processorService;
         _logger = logger;
     }
-    
+
     /// <summary>
     /// Upload CNAB file
     /// </summary>
@@ -35,17 +35,17 @@ public class CnabController : ControllerBase
         {
             return BadRequest("No file was uploaded.");
         }
-        
+
         if (!file.FileName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
         {
             return BadRequest("The file must be a text file (.txt).");
         }
-        
+
         try
         {
             using var stream = file.OpenReadStream();
             var result = await _processorService.ProcessCnabFileAsync(stream);
-            
+
             if (result.Success)
             {
                 return Ok(result);
@@ -61,7 +61,7 @@ public class CnabController : ControllerBase
             return StatusCode(500, "Internal server error while processing the file.");
         }
     }
-    
+
 }
 
 

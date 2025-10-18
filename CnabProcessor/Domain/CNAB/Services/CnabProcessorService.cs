@@ -9,38 +9,38 @@ public class CnabProcessorService : ICnabProcessorService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICnabParserService _parserService;
-    
+
     public CnabProcessorService(IUnitOfWork unitOfWork, ICnabParserService parserService)
     {
         _unitOfWork = unitOfWork;
         _parserService = parserService;
     }
-    
+
     public async Task<ProcessCNABResponse> ProcessCnabFileAsync(Stream fileStream)
     {
         try
         {
             await _unitOfWork.BeginTransactionAsync();
-            
+
             var transactions = await _parserService.ParseCnabFileAsync(fileStream);
-            
+
             if (!transactions.Any())
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 return new ProcessCNABResponse { Success = false, Message = "No valid transactions found in the file." };
             }
-            
+
             var storeGroups = transactions.GroupBy(t => new { t.StoreOwner, t.StoreName });
-            
+
             var processedStores = 0;
             var processedTransactions = 0;
             var allTransactions = new List<Transaction>();
-            
+
             // Process stores and prepare transactions for bulk insert
             foreach (var storeGroup in storeGroups)
             {
                 var store = await _unitOfWork.Stores.GetByOwnerAndNameAsync(storeGroup.Key.StoreOwner, storeGroup.Key.StoreName);
-                
+
                 if (store == null)
                 {
                     store = new Store
@@ -52,7 +52,7 @@ public class CnabProcessorService : ICnabProcessorService
                     await _unitOfWork.SaveChangesAsync();
                     processedStores++;
                 }
-                
+
                 // Prepare transactions for bulk insert
                 foreach (var transaction in storeGroup)
                 {
@@ -61,15 +61,15 @@ public class CnabProcessorService : ICnabProcessorService
                     processedTransactions++;
                 }
             }
-            
+
             // Bulk insert all transactions at once - MUCH FASTER!
             if (allTransactions.Any())
             {
                 await _unitOfWork.Transactions.BulkInsertAsync(allTransactions);
             }
-            
+
             await _unitOfWork.CommitTransactionAsync();
-            
+
             return new ProcessCNABResponse
             {
                 Success = true,
@@ -88,24 +88,5 @@ public class CnabProcessorService : ICnabProcessorService
             };
         }
     }
-    
-    public async Task<List<StoreSummaryResponse>> GetStoreSummariesAsync()
-    {
-        var stores = await _unitOfWork.Stores.GetStoresWithTransactionsAsync();
-        
-        return stores.Select(store => new StoreSummaryResponse
-        {
-            Id = store.Id,
-            Owner = store.Owner,
-            Name = store.Name,
-            Balance = store.Balance,
-            TransactionCount = store.Transactions.Count
-        }).ToList();
-    }
-    
-    public async Task<List<Transaction>> GetStoreTransactionsAsync(int storeId)
-    {
-        var transactions = await _unitOfWork.Transactions.GetByStoreIdAsync(storeId);
-        return transactions;
-    }
+
 }
